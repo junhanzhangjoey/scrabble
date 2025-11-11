@@ -4,15 +4,34 @@
 // Spring 2025
 
 import java.util.ArrayList;
-
+import java.util.*;
 /**
    A Rack of Scrabble tiles
  */
 
 public class Rack {
+   private String unique;
+   private int[] mult;
    
-
-
+   public Rack(String rack){
+      Map<Character, Integer> letterCount = new TreeMap<>();
+      for(Character c : rack.toLowerCase().toCharArray()){
+         if(Character.isLetter(c)){
+            letterCount.merge(c, 1, Integer::sum);
+         }
+      }
+      this.mult = new int[letterCount.size()];
+      StringBuilder sb = new StringBuilder();
+      int i = 0;
+      for(Map.Entry<Character, Integer> entry: letterCount.entrySet()){
+         sb.append(entry.getKey());
+         this.mult[i++] = entry.getValue();
+      }
+      this.unique = sb.toString();
+   }
+   public ArrayList<String> getAllSubsets(){
+      return allSubsets(this.unique, this.mult, 0);
+   }
 
    /**
       Finds all subsets of the multiset starting at position k in unique and mult.
@@ -52,7 +71,11 @@ public class Rack {
       }
       
       return allCombos;
+   }   
+   public String getUnique(){
+      return this.unique;
    }
-
-   
+   public int[] getMult(){
+      return this.mult;
+   }
 }

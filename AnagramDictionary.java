@@ -3,9 +3,8 @@
 // CS 455 PA4
 // Spring 2025
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-
+import java.util.*;
+import java.io.*;
 
 /**
    A dictionary of all anagram sets. 
@@ -14,9 +13,8 @@ import java.util.ArrayList;
    letters too, and likewise if the dictionary words are all upper case.
  */
 public class AnagramDictionary {
-   
-
-
+   private Map<String, ArrayList<String>> anagramMap;
+   private Set<String> wordsSet;
    /**
       Create an anagram dictionary from the list of words given in the file
       indicated by fileName.  
@@ -26,10 +24,21 @@ public class AnagramDictionary {
     */
    public AnagramDictionary(String fileName) throws FileNotFoundException,
                                                     IllegalDictionaryException {
-
+      this.anagramMap = new HashMap<>();
+      this.wordsSet = new HashSet<>();
+      try(Scanner in = new Scanner(new File(fileName))){
+         while(in.hasNext()){
+            String word = in.next().toLowerCase();
+            if(!wordsSet.add(word)){
+               throw new IllegalDictionaryException("ERROR: Illegal dictionary: dictionary file has a duplicate word: " + word);
+            }
+            String key = sortWord(word);
+            anagramMap.computeIfAbsent(key, k -> new ArrayList<>()).add(word);
+         }
+      }                                
    }
    
-
+   
    /**
       Get all anagrams of the given string. This method is case-sensitive.
       E.g. "CARE" and "race" would not be recognized as anagrams.
@@ -37,8 +46,13 @@ public class AnagramDictionary {
       @return a list of the anagrams of s
     */
    public ArrayList<String> getAnagramsOf(String string) {
-      return new ArrayList<String>(); // DUMMY CODE TO GET IT TO COMPILE
+      return new ArrayList<String>(anagramMap.getOrDefault(sortWord(string.toLowerCase()), new ArrayList<>()));
    }
    
-   
+   private String sortWord(String word) {
+      char[] arrayChars = word.toCharArray();
+      Arrays.sort(arrayChars);
+      String res = new String(arrayChars);
+      return res;
+   }
 }
