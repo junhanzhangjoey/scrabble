@@ -8,12 +8,15 @@ public class WordFinder {
                 fileName = args[0];
             }
             AnagramDictionary dict = new AnagramDictionary(fileName);
-            provideRack(dict);
-                        
+            provideRack(dict);                        
         }catch(FileNotFoundException e){
             System.out.println("ERROR: Dictionary file \"" + fileName + "\" does not exist.");
+            System.out.println("Exiting program.");
+            System.exit(0);
         }catch(IllegalDictionaryException e){
             System.out.println(e.getMessage());
+            System.out.println("Exiting program.");
+            System.exit(0);
         }
     }
 
@@ -22,7 +25,7 @@ public class WordFinder {
         System.out.println("Type . to quit.");
         ScoreTable scoreTable = new ScoreTable();
         while(true){
-            System.out.print("Rack?: ");
+            System.out.print("Rack? ");
             String input = in.nextLine();
             if(input.equals(".")){
                 break;
@@ -38,7 +41,9 @@ public class WordFinder {
                 scoreResult.computeIfAbsent(score, k -> new TreeSet<>()).addAll(anagrams);
             }
             System.out.println("We can make " + wordCount + " words from \"" + input + "\"");
-            System.out.println("All of the words with their scores (sorted by score):");
+            if(wordCount > 0){
+                System.out.println("All of the words with their scores (sorted by score):");
+            }
             for(Map.Entry<Integer, TreeSet<String>> entry : scoreResult.entrySet()){
                 int score = entry.getKey();
                 for(String str : entry.getValue()){

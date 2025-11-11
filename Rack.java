@@ -15,7 +15,8 @@ public class Rack {
    
    public Rack(String rack){
       Map<Character, Integer> letterCount = new TreeMap<>();
-      for(Character c : rack.toLowerCase().toCharArray()){
+
+      for(Character c : rack.toCharArray()){
          if(Character.isLetter(c)){
             letterCount.merge(c, 1, Integer::sum);
          }

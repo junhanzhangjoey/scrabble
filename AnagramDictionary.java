@@ -15,6 +15,7 @@ import java.io.*;
 public class AnagramDictionary {
    private Map<String, ArrayList<String>> anagramMap;
    private Set<String> wordsSet;
+   private boolean isUpperCaseDictionary;
    /**
       Create an anagram dictionary from the list of words given in the file
       indicated by fileName.  
@@ -26,9 +27,14 @@ public class AnagramDictionary {
                                                     IllegalDictionaryException {
       this.anagramMap = new HashMap<>();
       this.wordsSet = new HashSet<>();
+      boolean firstWord = true;
       try(Scanner in = new Scanner(new File(fileName))){
          while(in.hasNext()){
-            String word = in.next().toLowerCase();
+            String word = in.next();
+            if(firstWord){
+               isUpperCaseDictionary = word.equals(word.toUpperCase());
+               firstWord = false;
+            }
             if(!wordsSet.add(word)){
                throw new IllegalDictionaryException("ERROR: Illegal dictionary: dictionary file has a duplicate word: " + word);
             }
@@ -46,7 +52,10 @@ public class AnagramDictionary {
       @return a list of the anagrams of s
     */
    public ArrayList<String> getAnagramsOf(String string) {
-      return new ArrayList<String>(anagramMap.getOrDefault(sortWord(string.toLowerCase()), new ArrayList<>()));
+      return new ArrayList<String>(anagramMap.getOrDefault(sortWord(string), new ArrayList<>()));
+   }
+   public boolean isUpperCaseDict(){
+      return isUpperCaseDictionary;
    }
    
    private String sortWord(String word) {
