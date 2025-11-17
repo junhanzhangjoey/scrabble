@@ -3,16 +3,32 @@
 // CS 455 PA4
 // Spring 2025
 
-import java.util.ArrayList;
 import java.util.*;
 /**
-   A Rack of Scrabble tiles
- */
+   A Rack of Scrabble tiles.
+   This class represents a multiset of characters based on a given input string.
+   It provides functionality to compute all possible subset strings that can be
+   formed from the Rack, accounting for multiplicities of characters.
+*/
 
 public class Rack {
    private String unique;
    private int[] mult;
-   
+   /**
+      Constructs a Rack from a given input string of tiles.
+      The constructor converts the input into a multiset representation:
+         - Extracts only alphabetic characters
+         - Counts multiplicities using a TreeMap so the resulting keys are sorted
+         - Builds the `unique` string of distinct characters
+         - Builds the corresponding `mult` array of counts
+
+      Example:
+         input = "baba"
+         unique = "ab"
+         mult = [2, 2]
+
+      @param rack the string of Scrabble tiles entered by the user
+    */
    public Rack(String rack){
       Map<Character, Integer> letterCount = new TreeMap<>();
 
@@ -30,6 +46,22 @@ public class Rack {
       }
       this.unique = sb.toString();
    }
+   /**
+   Returns all possible subsets of the Rack represented by this object.
+   The Rack is treated as a multiset of characters, summarized by:
+      - unique: a sorted string of distinct characters
+      - mult: an array giving the multiplicity of each character in unique
+   This method simply calls the recursive helper allSubsets(), starting
+   at index 0, to generate every sub-multiset of the Rack.
+
+   Each returned subset is represented as a String containing 0 or more
+   occurrences of the letters from the Rack. For example, if the Rack is
+   "aab", the subsets include "", "a", "aa", "b", "ab", "aab", etc.
+
+   @return an ArrayList of all subset Strings that can be formed from the Rack.
+           The order of subsets is consistent with the recursive generation
+           used by allSubsets().
+ */
    public ArrayList<String> getAllSubsets(){
       return allSubsets(this.unique, this.mult, 0);
    }
@@ -73,9 +105,20 @@ public class Rack {
       
       return allCombos;
    }   
+   /**
+      Accessor for the sorted unique letter string.
+
+      @return the string of distinct characters in this Rack.
+    */
    public String getUnique(){
       return this.unique;
    }
+
+   /**
+      Accessor for the multiplicity array.
+
+      @return the multiplicities associated with the characters in `unique`.
+   */
    public int[] getMult(){
       return this.mult;
    }

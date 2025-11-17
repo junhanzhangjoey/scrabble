@@ -1,6 +1,27 @@
 import java.util.*;
 import java.io.*;
+
+/**
+ * WordFinder: main program for PA4.
+ *
+ * This program loads a dictionary of anagrams, prompts the user for Rack inputs,
+ * and prints all valid words that can be formed from those tiles, together with
+ * their Scrabble scores. The words are grouped and printed in descending score
+ * order.
+ *
+ * Input continues until the user types "." to quit.
+ */
 public class WordFinder {
+    /**
+     * Program entry point. Loads the dictionary file (default: "sowpods.txt")
+     * unless another file name is supplied as a command-line argument.
+     *
+     * Handles:
+     *   - Missing dictionary file → prints required error message and exits.
+     *   - Dictionary with duplicate words → handled by AnagramDictionary and exits.
+     *
+     * @param args optional dictionary file name
+     */
     public static void main(String args[]){
         String fileName = "sowpods.txt";
         try{
@@ -19,7 +40,19 @@ public class WordFinder {
             System.exit(0);
         }
     }
-
+    /**
+     * Repeatedly prompts the user for a Rack input, then:
+     *   1. Builds a Rack object
+     *   2. Generates all subsets of the rack
+     *   3. For each subset, retrieves all dictionary anagrams
+     *   4. Computes Scrabble scores
+     *   5. Organizes results in a TreeMap sorted by descending score
+     *   6. Prints number of words and the sorted list of scored results
+     *
+     * The loop terminates when the user types ".".
+     *
+     * @param dict the AnagramDictionary used for anagram lookup
+     */
     private static void provideRack(AnagramDictionary dict){
         Scanner in = new Scanner(System.in);
         System.out.println("Type . to quit.");

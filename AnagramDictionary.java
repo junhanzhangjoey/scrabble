@@ -52,7 +52,7 @@ public class AnagramDictionary {
       @return a list of the anagrams of s
     */
    public ArrayList<String> getAnagramsOf(String string) {
-      return new ArrayList<String>(anagramMap.getOrDefault(sortWord(string), new ArrayList<>()));
+      return new ArrayList<String>(this.anagramMap.getOrDefault(sortWord(string), new ArrayList<>()));
    }
    public boolean isUpperCaseDict(){
       return isUpperCaseDictionary;

@@ -13,8 +13,7 @@ people or AI software, except for the the resources explicitly mentioned
 in the CS 455 Course Syllabus.  And I did not share my solution or part
 of it with other students in the course."
 
-Initial below to "sign" the above statement:
-
+Initial below to "sign" the above statement:JZ
 
 ----------------------------------------------
 ACKNOWLEDGE ANY OUTSIDE SOURCES
@@ -35,6 +34,125 @@ KNOWN BUGS or LIMITATIONS:
 
 ----------------------------------------------
 DESCRIPTION OF YOUR CLASS DESIGN AND ALGORITHMS AND DATA STRUCTURES USED: (see assgt description for more about this)
+
+Overview
+
+The program consists of four main classes—WordFinder, AnagramDictionary, Rack, and ScoreTable—which work together to efficiently generate all playable Scrabble words from a user-provided rack of tiles. The design follows a modular, object-oriented structure where each class has a single, well-defined responsibility. The program emphasizes efficient lookup and grouping through appropriate data structures, especially hash-based indexing.
+
+I. AnagramDictionary
+    Purpose:
+        This class loads the dictionary file and organizes words into an efficient structure for fast anagram lookup.
+
+    Data Structures Used:
+
+        1.HashMap<String, ArrayList<String>> anagramMap
+
+            key = sorted letters of a word (e.g., "aet")
+
+            value = list of all dictionary words that match those letters (e.g., ["eat", "tea", "ate"])
+
+            This provides O(1) expected lookup time for retrieving anagram sets.
+
+        2.HashSet<String> wordsSet
+
+            Used to detect duplicate entries in the dictionary (as required by the spec).
+
+            Ensures detection in O(1) time.
+
+    Algorithm:
+
+        1. For each word in the dictionary:
+
+            Sort its characters → sorting cost O(L log L) where L = word length.
+
+            Insert into the HashMap bucket using computeIfAbsent.
+
+        2.Sorting one word and inserting once makes total preprocessing O(N · L log L) (N = number of words), which occurs only once at startup.
+    Lookup
+        getAnagramsOf(s):
+
+        Sort s → O(L log L)
+
+        Lookup in HashMap → O(1)
+
+        Return a new ArrayList copy → linear in number of anagrams.
+
+II. Rack
+    Purpose:
+        Convert the user's raw tile rack (e.g., "caare") into a multiset form and generate all possible subsets.
+
+    Data Structures Used
+
+        1.TreeMap<Character, Integer>
+
+            Used to count letter occurrences in alphabetical order.
+
+            Produces:
+
+                unique: sorted unique letters (e.g., "aer")
+
+                mult[]: multiplicities (e.g., [2,1,1])
+
+            TreeMap ensures deterministic alphabetical ordering → output subsets in sorted order.
+    Subset Generation Algorithm:
+        
+        Uses provided recursive method: allSubsets(unique, mult, k)
+        This generates all combinations by:
+            Taking subsets that include 0, 1, …, mult[k] copies of unique[k]
+            Combining with subsets of the remaining letters
+    
+    Complexity:
+
+        Total subsets of a multiset are O(2^M), where M = total tiles.
+        The recursion is optimal because:
+            1.It avoids generating duplicates
+            2.It produces combinations in lexicographic order
+III. ScoreTable
+    Purpose:
+        Compute Scrabble scores for any string using a constant-time table.
+
+    Data Structures Used:
+
+        1.Array or HashMap mapping characters → Scrabble point values
+
+        2.Score computation is O(length of word)
+
+    Why?
+
+    Fast score computation is essential because every subset is scored
+
+    Reduces overhead during main WordFinder loop
+IV. WordFinder
+    Purpose: Main program controller: reads input, generates subsets, retrieves anagrams, computes scores, and prints results.
+
+    Data Structures Used:
+
+        1. TreeMap<Integer, TreeSet<String>> scoreResult
+
+                Key = score
+
+                Value = sorted set of words with that score
+
+                TreeMap with reverse order gives:
+
+                    Scores printed in descending order
+
+                    TreeSet ensures alphabetical ordering within same score
+    Algorithm Flow
+
+        1.Read Rack from user
+
+        2.Generate all subsets → from Rack
+
+        3.For each subset:
+
+            Compute score → ScoreTable
+
+            Lookup anagrams → AnagramDictionary
+
+        4.Insert words into TreeMap structure
+
+        5.Print formatted output
 
 
 
